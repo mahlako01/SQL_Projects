@@ -1,0 +1,83 @@
+-- Create Database
+CREATE DATABASE sales_insights;
+USE sales_insights;
+
+-- Create Tables
+CREATE TABLE IF NOT EXISTS customer_sales (
+    Customer_ID VARCHAR(50),
+    Product_ID VARCHAR(50),
+    Transaction_ID VARCHAR(50),
+    Purchase_Frequency INT,
+    Average_Order_Value DECIMAL(10,2),
+    Most_Frequent_Category VARCHAR(100),
+    Time_Between_Purchases INT,
+    Region VARCHAR(100),
+    Churn_Probability DECIMAL(5,2),
+    Lifetime_Value DECIMAL(10,2),
+    Launch_Date DATE,
+    Peak_Sales_Date DATE,
+    Season VARCHAR(50),
+    Preferred_Purchase_Times VARCHAR(50),
+    Retention_Strategy VARCHAR(255)
+);
+
+-- Quick Check 
+SELECT * FROM customer_sales LIMIT 10
+
+-- count the total records
+SELECT COUNT(*) AS Total_Records FROM customer_sales
+Answer
+	Total_Records
+	10000
+
+-- Top 10 customers by lifetime value
+SELECT customer_id,Lifetime_Value
+FROM customer_sales
+ORDER BY Lifetime_Value DESC
+LIMIT 10
+ANSWER
+	customer_id	Lifetime_Value
+	CUST_60UJGD	9999.76
+	CUST_EHXRPM	9999.20
+	CUST_CA1QY3	9998.45
+	CUST_XRSCIE	9998.35
+	CUST_JIEUGX	9997.79
+	CUST_FL8VFS	9996.68
+	CUST_YC526K	9995.10
+	CUST_MXNXW6	9994.99
+	CUST_O9KA9V	9994.90
+	CUST_SCKZ86	9992.24
+
+-- AVERAGE ORDER VALUE BY REGION
+SELECT Region, AVG (Average_Order_Value)
+FROM customer_sales
+GROUP BY Region
+ANSWER
+	Region	AVG (Average_Order_Value)
+	South America	110.308465
+	North America	110.589063
+	Europe	108.942450
+	Asia	110.213896
+
+-- CHURN PROBABILITY BY PRODUCT CATEGORY
+SELECT Most_Frequent_Category, AVG (Churn_probability) AS Avg_churn
+FROM customer_sales
+GROUP BY Most_Frequent_Category
+ANSWER
+	Most_Frequent_Category	Avg_churn
+	Clothing	             0.501024
+	Electronics       	0.508660
+	Home	                  0.502928
+	Sports	             0.493245
+
+-- TRANSACTION PER SESSION
+SELECT Season, count(transaction_id) AS Total_transaction,
+Avg (Average_Order_Value) AS Avg_order
+FROM customer_sales
+GROUP BY Season
+ANSWER
+	Season	Total_transaction	Avg_order
+	Winter	2534	             108.776500
+	Spring	2443	             109.406664
+	Summer	2521               110.203261
+	Fall	      2502	             111.637758
